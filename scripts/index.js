@@ -7,42 +7,40 @@ const cardTemplate = document.querySelector('#card-template').content;
 const listCard = document.querySelector('.places__list');
 const buttonAddCard = document.querySelector('.profile__add-button');
 
-// переменная чтобы вывести сразу 6 карточек
-
-const minOutputCardItem = 6;
-
 // счётчик карточек 
 
 let cardIndex = 0;
 
 // @todo: Функция создания карточки
 
-function listItemCardAdd(name, link) {
+function listItemCardAdd() {
   if (cardIndex < initialCards.length) {
     const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
-    listCard.append(cardItem);
     const cardTitle = cardItem.querySelector('.card__title');
     const cardImage = cardItem.querySelector('.card__image');
-    cardTitle.textContent = name;
-    cardImage.setAttribute('src', link);
+    cardTitle.textContent = initialCards[cardIndex].name;
+    cardImage.setAttribute('src', initialCards[cardIndex].link);
     cardIndex++;
 
-    // @todo: Функция удаления карточки
-
     cardItem.querySelector('.card__delete-button').addEventListener('click', function() {
-      cardItem.remove();
+      cardDelete(cardItem);
     });
+    return cardItem;
   };
 };
 
-// цикл чтобы вывести сразу 6 карточек
+// @todo: Функция удаления карточки
 
-for (let i = 0; i < minOutputCardItem; i++) {
-listItemCardAdd(initialCards[cardIndex].name, initialCards[cardIndex].link);
-};
+function cardDelete(cardItem) {
+  cardItem.remove();
+}
 
-// @todo: Вывести карточки на страницу по нажатию кнопки buttonAddCard
+// @todo: Вывести карточки на страницу
 
-buttonAddCard.addEventListener('click', function() {
-  listItemCardAdd(initialCards[cardIndex].name, initialCards[cardIndex].link);
+function cardRender() {
+  listCard.append(listItemCardAdd());
+}
+
+initialCards.forEach(function() {
+  cardRender();
 })
