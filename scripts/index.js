@@ -14,19 +14,19 @@ let cardIndex = 0;
 // @todo: Функция создания карточки
 
 function listItemCardAdd() {
-  if (cardIndex < initialCards.length) {
+  
     const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardTitle = cardItem.querySelector('.card__title');
     const cardImage = cardItem.querySelector('.card__image');
+    if (cardIndex < initialCards.length) {
     cardTitle.textContent = initialCards[cardIndex].name;
     cardImage.setAttribute('src', initialCards[cardIndex].link);
     cardIndex++;
-
-    cardItem.querySelector('.card__delete-button').addEventListener('click', function() {
-      cardDelete(cardItem);
-    });
-    return cardItem;
   };
+  cardItem.querySelector('.card__delete-button').addEventListener('click', function() {
+    cardDelete(cardItem);
+  });
+  return cardItem;
 };
 
 // @todo: Функция удаления карточки
