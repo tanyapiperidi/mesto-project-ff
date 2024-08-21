@@ -7,22 +7,15 @@ const cardTemplate = document.querySelector('#card-template').content;
 const listCard = document.querySelector('.places__list');
 const buttonAddCard = document.querySelector('.profile__add-button');
 
-// счётчик карточек 
-
-let cardIndex = 0;
-
 // @todo: Функция создания карточки
 
-function listItemCardAdd() {
+function listItemCardAdd(title, link) {
   const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardTitle = cardItem.querySelector('.card__title');
   const cardImage = cardItem.querySelector('.card__image');
-  if (cardIndex < initialCards.length) {
-    cardTitle.textContent = initialCards[cardIndex].name;
-    cardImage.setAttribute('src', initialCards[cardIndex].link);
-    cardIndex++;
-  };
-  cardItem.querySelector('.card__delete-button').addEventListener('click', function() {
+  cardTitle.textContent = title;
+  cardImage.setAttribute('src', link);
+  cardItem.querySelector('.card__delete-button').addEventListener('click', () => {
     cardDelete(cardItem);
   });
   return cardItem;
@@ -36,10 +29,10 @@ function cardDelete(cardItem) {
 
 // @todo: Вывести карточки на страницу
 
-function cardRender() {
-  listCard.append(listItemCardAdd());
+function cardRender(container, cardData) {
+  container.append(cardData);
 }
 
-initialCards.forEach(function() {
-  cardRender();
+initialCards.forEach(function(obj) {
+  cardRender(listCard, listItemCardAdd(obj.name, obj.link));
 })
