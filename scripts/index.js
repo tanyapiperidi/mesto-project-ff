@@ -5,18 +5,18 @@ const cardTemplate = document.querySelector('#card-template').content;
 // @todo: DOM узлы
 
 const listCard = document.querySelector('.places__list');
-const buttonAddCard = document.querySelector('.profile__add-button');
 
 // @todo: Функция создания карточки
 
-function listItemCardAdd(title, link) {
+function listItemCardAdd(name, link, onDelete) {
   const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardTitle = cardItem.querySelector('.card__title');
   const cardImage = cardItem.querySelector('.card__image');
-  cardTitle.textContent = title;
+  cardTitle.textContent = name;
   cardImage.setAttribute('src', link);
+  cardImage.setAttribute('alt', name);
   cardItem.querySelector('.card__delete-button').addEventListener('click', () => {
-    cardDelete(cardItem);
+    onDelete(cardItem);
   });
   return cardItem;
 };
@@ -28,11 +28,11 @@ function cardDelete(cardItem) {
 }
 
 // @todo: Вывести карточки на страницу
-
+ 
 function cardRender(container, cardData) {
   container.append(cardData);
 }
 
 initialCards.forEach(function(obj) {
-  cardRender(listCard, listItemCardAdd(obj.name, obj.link));
+  cardRender(listCard, listItemCardAdd(obj.name, obj.link, cardDelete));
 })
