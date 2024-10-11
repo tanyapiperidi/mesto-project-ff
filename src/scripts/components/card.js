@@ -1,17 +1,21 @@
 import {cardTemplate} from '../index.js';
-import {imageEnlarge} from './modal.js';
 
-export function listItemCardAdd(name, link, onDelete) {
+export function listItemCardAdd(name, link, onDelete, like, popup) {
   const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardTitle = cardItem.querySelector('.card__title');
   const cardImage = cardItem.querySelector('.card__image');
   const cardButtonDelete = cardItem.querySelector('.card__delete-button');
+  const cardButtonLike = cardItem.querySelector('.card__like-button');
   cardTitle.textContent = name;
   cardImage.setAttribute('src', link);
   cardImage.setAttribute('alt', name);
   cardButtonDelete.addEventListener('click', () => {
     onDelete(cardItem);
   });
+  cardButtonLike.addEventListener('click', like)     
+  cardImage.addEventListener('click', () => {
+    popup(name, link)
+  })
   return cardItem;
 };
 
@@ -30,30 +34,31 @@ export function cardRender(container, cardData) {
 // Добавление и удаление лайка
 
 
-function likeCardAdd(evt) {
-  evt.classList.add('card__like-button_is-active');
-};
+// function likeCardAdd(evt) {
+// };
 
-function likeCardRemove(evt) {
-  evt.classList.remove('card__like-button_is-active');
-};
+// function likeCardRemove(evt) {
+//   
+// };
 
+export function likeCard(evt) {
+  if (evt.target.classList.contains('card__like-button_is-active')) {
+    evt.target.classList.remove('card__like-button_is-active');
+  }
+  else {
+    evt.target.classList.add('card__like-button_is-active');
+  }
+}
 // Увеличить картинку
 
 
 
 // Проверка события. 1-лайк; 2-по лайку лайкнутому; 3-на картинку;
 
-export function listCardEvent(evt) {
-  if (evt.target.classList.contains('card__like-button')) {
-    if (evt.target.classList.contains('card__like-button_is-active')) {
-      likeCardRemove(evt.target);
-    }
-    else {
-      likeCardAdd(evt.target);
-    }
-  }
-  else if(evt.target.classList.contains('card__image')) {
-    imageEnlarge(evt.target);
-  }
-};
+// export function listCardEvent(evt) {
+//   
+//   }
+//   else if(evt.target.classList.contains('card__image')) {
+//     imageEnlarge(evt.target);
+//   }
+// };

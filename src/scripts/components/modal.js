@@ -1,30 +1,34 @@
-import {popups} from '../index.js';
-
-function imageEnlarge(evt) {
-  const cardImagePopup = document.querySelector('.popup_type_image');
-  const imagePopup = cardImagePopup.querySelector('.popup__image');
-  const imageSrc = evt.getAttribute('src');
-  cardImagePopup.setAttribute('style', 'display: flex;');
-  document.addEventListener('keydown', keydownEsc);
-  imagePopup.setAttribute('src', imageSrc);
+function imageEnlarge(name, link) {
+  const imagePopup = document.querySelector('.popup_type_image');
+  const image = imagePopup.querySelector('.popup__image');
+  const text = imagePopup.querySelector('.popup__caption')
+  // const imageSrc = evt.getAttribute('src');
+  imagePopup.setAttribute('style', 'display: flex;');
+  image.setAttribute('src', link);
+  text.textContent = name
+  function handleKeydown(evt) {
+    keydownEsc(evt, imagePopup)
+  }
+  document.addEventListener('keydown', handleKeydown);
 };
 
-function keydownEsc(evt) {
+function keydownEsc(evt, popup) {
       if (evt.key === 'Escape'){
-        closePopup(popups);
+        closePopup(popup);
       }
 };
 
 function openPopup(popup) {
   popup.setAttribute('style', 'display:flex;');
-  document.addEventListener('keydown', keydownEsc);
+  function handleKeydown(evt) {
+    keydownEsc(evt, popup)
+  }
+  document.addEventListener('keydown', handleKeydown);
 };
 
-function closePopup(popups) {
-  popups.forEach(popup => {
+function closePopup(popup) {
   popup.setAttribute('style', 'display:none;');
   document.removeEventListener('keydown', keydownEsc);
-  })
 };
 
 export {imageEnlarge, openPopup, closePopup};
