@@ -1,9 +1,9 @@
 import '../pages/index.css';
 import {initialCards} from './cards.js';
-import {initialCard, cardDelete, cardRender, toggleCardLike}  from './components/places/card.js';
-import {openImagePopup, openPopup, closePopup, checkClickToClosePopup} from './components/modal/modal.js';
-import {handleFormSubmit, populateEditProfilePopup} from './components/modal/form/form.js';
-import {setSubmitButtonState} from './components/modal/form/validation.js';
+import {initialCard, cardDelete, toggleCardLike, cardRender}  from '../components/places/card.js';
+import {openPopup, openImagePopup, checkClickToClosePopup, closePopup} from '../components/modal/modal.js';
+import {populateEditProfilePopup, handleFormSubmit} from '../components/modal/form/form.js';
+import {setSubmitButtonState} from '../components/modal/form/validation.js';
 
 // @todo:  Темплейт карточки
 
@@ -25,10 +25,12 @@ export const popupImage = document.querySelector('.popup_type_image');
 const formEditProfile = document.forms.editProfile;
 const profileNameInput = formEditProfile.elements.name;
 const profileDescriptionInput = formEditProfile.elements.description;
+const buttonSubmitFormEditProfile = formEditProfile.querySelector('.popup__button');
 // @todo:  Форма добавления карточки
-export const formNewPlace = document.forms.newPlace;
-const placeNameInput = formNewPlace.elements.placeName;
-const ImageLinkInput = formNewPlace.elements.link;
+export const formNewCard = document.forms.newPlace;
+const placeNameInput = formNewCard.elements.placeName;
+const ImageLinkInput = formNewCard.elements.link;
+export const buttonSubmitFormNewCard = formNewCard.querySelector('.popup__button');
 
 //  @todo:  Инициализация карточек
 
@@ -55,29 +57,29 @@ formEditProfile.addEventListener('submit', evt => {
   evt.preventDefault();
   handleFormSubmit(profileName, profileDescription, profileNameInput, profileDescriptionInput);
   closePopup(popupEditProfile);
-  setSubmitButtonState(false, formEditProfile.querySelector('.popup__button'));
+  setSubmitButtonState(false, buttonSubmitFormEditProfile);
 });
 
 // обработка отправки формы, измн кнопки сохранить и очистка полей ввода
 
-formNewPlace.addEventListener('submit', evt => {
+formNewCard.addEventListener('submit', evt => {
   evt.preventDefault();
   cardRender(listCard, initialCard(placeNameInput.value, ImageLinkInput.value, cardDelete, toggleCardLike, openImagePopup),'prepend');
   closePopup(popupAddCard);
-  formNewPlace.reset();
-  setSubmitButtonState(false, formNewPlace.querySelector('.popup__button'));
+  formNewCard.reset();
+  setSubmitButtonState(false, buttonSubmitFormNewCard);
 });
 
 // Проверка заполненности полей
 
 formEditProfile.addEventListener('input', () => {
   const isValid = profileNameInput.value.length > 0 && profileDescriptionInput.value.length > 0;
-  setSubmitButtonState(isValid, formEditProfile.querySelector('.popup__button'));
+  setSubmitButtonState(isValid, buttonSubmitFormEditProfile);
 });
 
-formNewPlace.addEventListener('input', () => {
+formNewCard.addEventListener('input', () => {
   const isValid = placeNameInput.value.length > 0 && ImageLinkInput.value.length > 5;
-  setSubmitButtonState(isValid, formNewPlace.querySelector('.popup__button'));
+  setSubmitButtonState(isValid, buttonSubmitFormNewCard);
 });
 
 // для закрытия попапов при клике на оверлей и кнопки закрыть

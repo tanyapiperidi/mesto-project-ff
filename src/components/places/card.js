@@ -1,6 +1,6 @@
-import {cardTemplate} from '../../index.js';
+import {cardTemplate} from '../../scripts/index.js';
 
-function initialCard(name, link, onDelete, like, openPopup) {
+function initialCard(name, link, onDelete, toglleLike, openPopupImage) {
   const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardTitle = cardItem.querySelector('.card__title');
   const cardImage = cardItem.querySelector('.card__image');
@@ -12,22 +12,11 @@ function initialCard(name, link, onDelete, like, openPopup) {
   cardButtonDelete.addEventListener('click', () => {
     onDelete(cardItem);
   });
-  cardButtonLike.addEventListener('click', like);   
+  cardButtonLike.addEventListener('click', toglleLike);   
   cardImage.addEventListener('click', () => {
-    openPopup(name, link);
+    openPopupImage(name, link);
   });
   return cardItem;
-};
-
-// @todo: Вывести карточки на страницу
- 
-function cardRender(container, cardData, position = 'append') {
-  if (position === 'prepend') {
-  container.prepend(cardData);
-  }
-  else {
-  container.append(cardData);
-  };
 };
 
 // @todo: Функция удаления карточки
@@ -42,4 +31,15 @@ function toggleCardLike(evt) {
   evt.target.classList.toggle('card__like-button_is-active');
 };
 
-export {initialCard, cardRender, cardDelete, toggleCardLike}
+// @todo: Вывести карточки на страницу
+ 
+function cardRender(container, cardData, position = 'append') {
+  if (position === 'prepend') {
+  container.prepend(cardData);
+  }
+  else {
+  container.append(cardData);
+  };
+};
+
+export {initialCard, cardDelete, toggleCardLike, cardRender}
