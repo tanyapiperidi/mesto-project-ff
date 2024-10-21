@@ -1,5 +1,5 @@
-function initialCard(cardData) {
-  const cardItem = cardData.cardTemplate.querySelector('.places__item').cloneNode(true);
+function initialCard(cardTemplate, cardData, cardFunction) {
+  const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardTitle = cardItem.querySelector('.card__title');
   const cardImage = cardItem.querySelector('.card__image');
   const cardButtonDelete = cardItem.querySelector('.card__delete-button');
@@ -8,12 +8,11 @@ function initialCard(cardData) {
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
   cardButtonDelete.addEventListener('click', () => {
-    cardData.cardDelete(cardItem);
+    cardFunction.cardDelete(cardItem);
   });
-  cardButtonLike.addEventListener('click', cardData.toggleCardLike);   
+  cardButtonLike.addEventListener('click', cardFunction.toggleCardLike);   
   cardImage.addEventListener('click', () => {
-    cardData.openPopup(cardData.popupImage);
-    cardData.populatePopupImage(cardTitle.textContent, cardImage.src);
+    cardFunction.populatePopupImage(cardTitle.textContent, cardImage.src);
   });
   return cardItem;
 };

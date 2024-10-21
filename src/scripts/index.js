@@ -30,23 +30,17 @@ const formNewCard = document.forms.newPlace,
       placeNameInput = formNewCard.elements.placeName,
       ImageLinkInput = formNewCard.elements.link;
 // Данные карточки и ее функции
-const cardData = {
-  name:'',
-  link:'',
-  cardTemplate,
+
+const cardFunction = {
   cardDelete: cardDelete,
   toggleCardLike: toggleCardLike,
-  popupImage,
-  openPopup: openPopup,
   populatePopupImage: populatePopupImage
 };
 
 //  @todo:  Инициализация карточек
 
-initialCards.forEach(function(obj) {
-  cardData.name = obj.name;
-  cardData.link = obj.link;
-  cardRender(listCard, initialCard(cardData));
+initialCards.forEach(function(cardData) {
+  cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction));
 });
 
 // @todo: Вывести карточки на страницу
@@ -71,6 +65,7 @@ buttonEditProfile.addEventListener('click', () => {
 // Открытие попапа добавления карточки при клике 
 
 buttonAddCard.addEventListener('click', () => {
+  formNewCard.reset();
   openPopup(popupAddCard);
 });
 
@@ -87,11 +82,12 @@ formEditProfile.addEventListener('submit', evt => {
 
 formNewCard.addEventListener('submit', evt => {
   evt.preventDefault();
-  cardData.name = placeNameInput.value;
-  cardData.link = ImageLinkInput.value;
-  cardRender(listCard, initialCard(cardData), 'prepend');
+  const cardData = {
+    name: placeNameInput.value,
+    link: ImageLinkInput.value
+  };
+  cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction), 'prepend');
   closePopup(popupAddCard);
-  formNewCard.reset();
 });
 
 // Заполнение данных попапа изображения
@@ -100,6 +96,7 @@ function populatePopupImage(name, link) {
   popupImageTag.src = link;
   popupImageTag.alt = name;
   popupImageText.textContent = name;
+  openPopup(popupImage);
 };
 
 // для закрытия попапов при клике на оверлей и кнопки закрыть
@@ -109,9 +106,6 @@ popups.forEach((popup) => {
   popup.addEventListener('click', evt => {
     if (evt.target === popup || evt.target === buttonClose) {
       closePopup(popup);
-      if (popup === popupAddCard) {
-        formNewCard.reset();
-      };
     };
   });
 });
