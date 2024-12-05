@@ -33,7 +33,8 @@ const formEditProfile = document.forms.editProfile,
 const formNewCard = document.forms.newPlace,
       placeNameInput = formNewCard.elements.placeName,
       ImageLinkInput = formNewCard.elements.link;
-// Данные карточки и ее функции
+
+// Данные карточки
 
 const cardFunction = {
   cardDelete: cardDelete,
@@ -41,39 +42,81 @@ const cardFunction = {
   populatePopupImage: populatePopupImage
 };
 
-// Валидация ////  RegExp.test (true false)
-const regForm = /[A-Za-zА-ЯЁа-яё\- ]+/g;  
 
 
+// валидация
 
-popupForms.forEach(form => {
-  const popupInput = form.querySelectorAll('.popup__input');
-  popupInput.forEach(input => {
-    input.addEventListener('input', evt => {
-      console.log(evt.target.validity.valid);
+// Проверяет поле на валидацию для функции toggleButtonState
+const hasInvalidInput = (inputList) => {
+  return inputList.some((inputElement) => {
+    return !inputElement.validity.valid;
+  });
+}; 
+
+const toggleButtonState = (inputList, buttonElement, options) => {
+  if (hasInvalidInput(inputList)) {
+    buttonElement.disabled = true;
+    buttonElement.classList.add(options.inactiveButtonClass);
+  }
+  else {
+    buttonElement.disabled = false;
+    buttonElement.classList.remove(options.inactiveButtonClass);
+  };
+};
+
+const setEventListeners = (formElement, options) => {
+  // Находит поля и кнопку в форме. 
+  const inputList = Array.from(formElement.querySelectorAll(options.inputSelector));
+  // Находит кнопку в форме. 
+  const buttonElement = formElement.querySelector(options.submitButtonSelector);
+  // Вызывает функцию состояния кнопки. 
+  toggleButtonState(inputList, buttonElement);
+  // Перебирает поля вызывая обработчик input для проверки поля на валидность
+  inputList.forEach(inputElement => {
+    inputElement,addEventListener('input', () => {
+      isValid(formElement, inputElement, options);
+      toggleButtonState(inputList, buttonElement);
     });
   });
-});
+};
 
-// const showInputError = (element) => {
-//   element.classList.add('popup__input_type_error');
-// };
+//  Получает объект настроек(классы для элементов формы) 
+const enableValidation = (options) => {
+  // Находит все формы
+  const formList = Array.from(document.querySelectorAll(options.formSelector));
+  formList.forEach((formElement) => {
+    setEventListeners(formElement, options);
+  });
+};
 
-// const hideInputError = (element) => {
-//   element.classList.remove('popup__input_type_error');
-// };
 
-// const isValid = () => {
-//   if (input.validity.patternMismatch) {
 
-//   }
-//   if (!input.validity.valid) {
-//     showInputError(form, input, input.validationMessage);
-//   }
-//   else {
-//     hideInputError(form, input);
-//   };
-// };
+
+
+
+
+
+
+
+
+
+
+const clearValidation = (formElement, buttonElement) => {
+  
+};
+
+
+
+// Вызов работы валидации форм
+
+// enableValidation({
+//   formSelector: '.popup__form',
+//   inputSelector: '.popup__input',
+//   submitButtonSelector: '.popup__button',
+//   inactiveButtonClass: 'popup__button_disabled',
+//   inputErrorClass: 'popup__input_type_error',
+//   errorClass: 'popup__error_visible'
+// }); 
 
 //  @todo:  Инициализация карточек
 
