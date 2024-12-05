@@ -21,6 +21,10 @@ const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image'),
       popupImageTag = popupImage.querySelector('.popup__image'),
       popupImageText = popupImage.querySelector('.popup__caption');
+
+// @todo:  Формы попапов
+const popupForms = document.querySelectorAll('.popup__form');
+
 // @todo:  Форма редактирования профиля
 const formEditProfile = document.forms.editProfile,
       profileNameInput = formEditProfile.elements.name,
@@ -36,6 +40,40 @@ const cardFunction = {
   toggleCardLike: toggleCardLike,
   populatePopupImage: populatePopupImage
 };
+
+// Валидация ////  RegExp.test (true false)
+const regForm = /[A-Za-zА-ЯЁа-яё\- ]+/g;  
+
+
+
+popupForms.forEach(form => {
+  const popupInput = form.querySelectorAll('.popup__input');
+  popupInput.forEach(input => {
+    input.addEventListener('input', evt => {
+      console.log(evt.target.validity.valid);
+    });
+  });
+});
+
+// const showInputError = (element) => {
+//   element.classList.add('popup__input_type_error');
+// };
+
+// const hideInputError = (element) => {
+//   element.classList.remove('popup__input_type_error');
+// };
+
+// const isValid = () => {
+//   if (input.validity.patternMismatch) {
+
+//   }
+//   if (!input.validity.valid) {
+//     showInputError(form, input, input.validationMessage);
+//   }
+//   else {
+//     hideInputError(form, input);
+//   };
+// };
 
 //  @todo:  Инициализация карточек
 
