@@ -1,17 +1,16 @@
 import '../pages/index.css';
-import {initialCards} from './cards.js';
-import {initialCard, cardDelete, toggleCardLike}  from '../components/places/card.js';
+import {initialCard, cardDelete, cardLikeReactions, toggleCardLike}  from '../components/places/card.js';
 import {openPopup, closePopup} from '../components/modal/modal.js';
+import {clearValidation, enableValidation} from '../components/validation/validation.js';
+import {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike} from '../components/api/api.js';
 
 // @todo:  Темплейт карточки
-
 const cardTemplate = document.querySelector('#card-template').content;
-
 // @todo:  DOM узлы
-
 const listCard = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+const profileImageLink = document.querySelector('.profile__image');
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddCard = document.querySelector('.profile__add-button');
 // @todo:  Попапы 
@@ -21,10 +20,10 @@ const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image'),
       popupImageTag = popupImage.querySelector('.popup__image'),
       popupImageText = popupImage.querySelector('.popup__caption');
-
+const popupDeleteCard = document.querySelector('.popup_type_delete-card'),
+      popupDeleteCardButton = popupDeleteCard.querySelector('.popup__button');
 // @todo:  Формы попапов
 const popupForms = document.querySelectorAll('.popup__form');
-
 // @todo:  Форма редактирования профиля
 const formEditProfile = document.forms.editProfile,
       profileNameInput = formEditProfile.elements.name,
@@ -33,99 +32,73 @@ const formEditProfile = document.forms.editProfile,
 const formNewCard = document.forms.newPlace,
       placeNameInput = formNewCard.elements.placeName,
       ImageLinkInput = formNewCard.elements.link;
+// ID профиля, для функции добавления карточки
+let userProfileId;
 
-// Данные карточки
+const popupDeleteCardClass = {
+  popupCardDelete: popupDeleteCard,
+  popupButton: popupDeleteCardButton
+}
 
+// функции карточки 
 const cardFunction = {
   cardDelete: cardDelete,
+  cardDeleteRequestServer: deleteCard,
+  cardLikeReactions: cardLikeReactions,
   toggleCardLike: toggleCardLike,
-  populatePopupImage: populatePopupImage
+  populatePopupImage: populatePopupImage,
+  openPopup: openPopup,
+  closePopup: closePopup,
+  putAddCardLike: putAddCardLike, 
+  deleteCardLike: deleteCardLike
+};
+
+// Функции делабщие запрос на сервер
+
+// Классы и селекторы для валидации
+const validationConfing = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
 };
 
 
+// Имя и описание профиля 
+// заполнение полей данных пользователя 
 
-// валидация
+Promise.all([getInitialCards(), getUserProfile()])
+.then((apiResult) => {
+  const cardsData = apiResult[0];
+  const userDataProfile = apiResult[1];
+  cardsData.forEach(cardData => {
+    cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction, userDataProfile._id, popupDeleteCardClass));
+  })
+  initializeUserDetails(userDataProfile);
+  userProfileId = userDataProfile._id;
+})
+.catch((error) => {
+  console.log('Ошибка запроса при выполнении запроса:', error)
+})
 
-// Проверяет поле на валидацию для функции toggleButtonState
-const hasInvalidInput = (inputList) => {
-  return inputList.some((inputElement) => {
-    return !inputElement.validity.valid;
-  });
-}; 
 
-const toggleButtonState = (inputList, buttonElement, options) => {
-  if (hasInvalidInput(inputList)) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add(options.inactiveButtonClass);
-  }
-  else {
-    buttonElement.disabled = false;
-    buttonElement.classList.remove(options.inactiveButtonClass);
-  };
+const initializeUserDetails = (userDataProfile) => {
+  profileName.textContent = userDataProfile.name;
+  profileDescription.textContent = userDataProfile.about;
+  profileImageLink.style.backgroundImage = userDataProfile.avatar;
 };
-
-const setEventListeners = (formElement, options) => {
-  // Находит поля и кнопку в форме. 
-  const inputList = Array.from(formElement.querySelectorAll(options.inputSelector));
-  // Находит кнопку в форме. 
-  const buttonElement = formElement.querySelector(options.submitButtonSelector);
-  // Вызывает функцию состояния кнопки. 
-  toggleButtonState(inputList, buttonElement);
-  // Перебирает поля вызывая обработчик input для проверки поля на валидность
-  inputList.forEach(inputElement => {
-    inputElement,addEventListener('input', () => {
-      isValid(formElement, inputElement, options);
-      toggleButtonState(inputList, buttonElement);
-    });
-  });
-};
-
-//  Получает объект настроек(классы для элементов формы) 
-const enableValidation = (options) => {
-  // Находит все формы
-  const formList = Array.from(document.querySelectorAll(options.formSelector));
-  formList.forEach((formElement) => {
-    setEventListeners(formElement, options);
-  });
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-const clearValidation = (formElement, buttonElement) => {
-  
-};
-
-
 
 // Вызов работы валидации форм
-
-// enableValidation({
-//   formSelector: '.popup__form',
-//   inputSelector: '.popup__input',
-//   submitButtonSelector: '.popup__button',
-//   inactiveButtonClass: 'popup__button_disabled',
-//   inputErrorClass: 'popup__input_type_error',
-//   errorClass: 'popup__error_visible'
-// }); 
+enableValidation(validationConfing); 
 
 //  @todo:  Инициализация карточек
-
-initialCards.forEach(function(cardData) {
-  cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction));
-});
+// cardsData.forEach(cardData => {
+//   cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction));
+// })
 
 // @todo: Вывести карточки на страницу
- 
 function cardRender(container, cardData, position = 'append') {
   if (position === 'prepend') { 
     container.prepend(cardData); 
@@ -135,9 +108,9 @@ function cardRender(container, cardData, position = 'append') {
     };
 };
 
-// Открытие попапа редактирования профиля при клике на кнопку и заполнение полей
-
+// Открытие попапа редактирования профиля при клике на кнопку и 
 buttonEditProfile.addEventListener('click', () => {
+  clearValidation(formEditProfile, validationConfing);
   profileNameInput.value = profileName.textContent;
   profileDescriptionInput.value = profileDescription.textContent;
   openPopup(popupEditProfile);
@@ -146,6 +119,7 @@ buttonEditProfile.addEventListener('click', () => {
 // Открытие попапа добавления карточки при клике 
 
 buttonAddCard.addEventListener('click', () => {
+  clearValidation(formNewCard, validationConfing);
   formNewCard.reset();
   openPopup(popupAddCard);
 });
@@ -154,21 +128,38 @@ buttonAddCard.addEventListener('click', () => {
 
 formEditProfile.addEventListener('submit', evt => {
   evt.preventDefault();
-  profileName.textContent = profileNameInput.value;
-  profileDescription.textContent = profileDescriptionInput.value;
-  closePopup(popupEditProfile);
+  formEditProfile.querySelector('.popup__button').textContent = 'Сохранение...';
+  const userDataProfile = {
+    name: profileNameInput.value,
+    about: profileDescriptionInput.value
+  }
+  patchUserProfile(userDataProfile)
+  .then(patchUserProfile => {
+    profileName.textContent = patchUserProfile.name;
+    profileDescription.textContent = patchUserProfile.about;
+    closePopup(popupEditProfile);
+    formEditProfile.querySelector('.popup__button').textContent = 'Сохранить';
+  })
 });
 
 // обработка отправки формы, измн кнопки сохранить и очистка полей ввода
 
 formNewCard.addEventListener('submit', evt => {
   evt.preventDefault();
+  formNewCard.querySelector('.popup__button').textContent = 'Сохранение...'
   const cardData = {
     name: placeNameInput.value,
     link: ImageLinkInput.value
   };
-  cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction), 'prepend');
-  closePopup(popupAddCard);
+  postAddCard(cardData)
+  .then(addCardData => {
+    cardRender(listCard, initialCard(cardTemplate, addCardData, cardFunction, userProfileId, popupDeleteCardClass), 'prepend');
+    closePopup(popupAddCard);
+    formNewCard.querySelector('.popup__button').textContent = 'Сохранить'
+  })
+  .catch(error => {
+    console.log('Ошибка:', error)
+  })
 });
 
 // Заполнение данных попапа изображения
