@@ -1,5 +1,4 @@
-// Показать ошибку валидации
-
+// @todo:  Показать ошибку валидации
 const showInputError = (formElement, inputElement, options, validationMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(options.inputErrorClass);
@@ -7,15 +6,14 @@ const showInputError = (formElement, inputElement, options, validationMessage) =
   errorElement.textContent = validationMessage;
 };
 
-// Скрыть ошибку валидации
-
+// @todo:  Скрыть ошибку валидации
 const hideInputError = (formElement, inputElement, options) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove(options.inputErrorClass);
   errorElement.textContent = '';
 };
 
-// Проверка валидации
+// @todo:  Проверка валидации
 const isValid = (formElement, inputElement, options) => {
   // Проверка регулярного выражения
   if (inputElement.validity.patternMismatch) {
@@ -35,16 +33,14 @@ const isValid = (formElement, inputElement, options) => {
   };
 };
 
-// Проверяет поле на валидацию для функции toggleButtonState
-
+// @todo:  Проверяет поле на валидацию для функции toggleButtonState
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
     return !inputElement.validity.valid; 
   });
 }; 
 
-// Переключение состояния кнопки при валидации
-
+// @todo:  Переключение состояния кнопки при валидации
 const toggleButtonState = (inputList, buttonElement, options) => {
   if (hasInvalidInput(inputList)) {
     buttonElement.disabled = true;
@@ -72,6 +68,7 @@ const setEventListeners = (formElement, options) => {
   });
 };
 
+// @todo:  Очистка полей валидации, и добавление атрибута "disabled" кнопкам "Сохранить"
 const clearValidation = (formElement, options) => {
   const buttonElement = formElement.querySelector(options.submitButtonSelector);
   const inputList = Array.from(formElement.querySelectorAll(options.inputSelector));
@@ -85,7 +82,6 @@ const clearValidation = (formElement, options) => {
 };
 
 // Получает объект настроек = названия классов элементов формы
-
 const enableValidation = (options) => {
   // Находит все формы
   const formList = Array.from(document.querySelectorAll(options.formSelector));

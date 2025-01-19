@@ -100,7 +100,11 @@ const patchUserProfileImage = (linkImage) => {
     if(res.ok) {
       return res.json();
     };
-  });
+    console.log(res)
+  })
+  .catch(error => {
+    console.log('Ошибка в запросе к серверу:', error)
+  })
 };
 
 export {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike, patchUserProfileImage};

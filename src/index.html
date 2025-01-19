@@ -13,7 +13,7 @@
     </header>
     <main class="content">
       <section class="profile page__section">
-        <div class="profile__image" style="background-image: url('<%=require('./images/avatar.jpg')%>');">
+        <div class="profile__image">
           <img src="<%=require('./images/profile__image-edit.svg')%>" alt="Редактировать аватар профиля" class="profile__image-edit">
         </div>
         <div class="profile__info">
@@ -76,9 +76,9 @@
     <div class="popup popup_type_edit-avatar-profile popup_is-animated">
       <div class="popup__content popup__content_content-edit-avatar-profile">
         <h3 class="popup__title">Обновить аватар</h3>
-        <form class="popup__form">
-          <input type="url" id="link-input" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
-          <span class="link-input-error popup__input-error"></span>
+        <form class="popup__form" name="newAvatarProfile" novalidate>
+          <input type="url" id="link-input-avatar" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
+          <span class="link-input-avatar-error popup__input-error"></span>
           <button type="submit" class="button popup__button">Сохранить</button>
         </form>
         <button type="button" class="popup__close"></button>

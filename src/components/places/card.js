@@ -5,36 +5,36 @@ const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDel
   const cardButtonDelete = cardItem.querySelector('.card__delete-button');
   const cardButtonLike = cardItem.querySelector('.card__like-button');
   const cardLikeReactions = cardItem.querySelector('.card__like-reactions');
-  // Заполнение карточки
+  // @todo:  Заполнение карточки
   cardTitle.textContent = cardData.name;
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
-  // Заполнение id профиля
+  // @todo:  id профиля
   const profileId = profileInfo.id;
   // Добавление id карточке
   cardItem.setAttribute('id', `${cardData._id}`);
-  // Отображение кол-ва лайков
-  cardLikeReactions.textContent = cardFunction.cardLikeReactions(cardData.likes);
-  // Добавление класса active ранее понравившихся карточек, получаемые от сервера
+  // @todo:  Отображение кол-ва лайков
+  cardLikeReactions.textContent = cardData.likes.length;
+  // @todo:  Добавление класса active ранее понравившихся карточек
   cardFunction.cardLikeMyReactions(cardData, profileId, cardButtonLike, cardFunction);
-  // Слушатель постановки лайка карточке
+  // @todo:  Слушатель постановки лайка карточке, или удаление лайка
   cardButtonLike.addEventListener('click', () => {
     if(!cardButtonLike.classList.contains('card__like-button_is-active')) {
       cardFunction.putAddCardLike(cardData._id)
       .then(card => {
-        cardLikeReactions.textContent = cardFunction.cardLikeReactions(card.likes);
+        cardLikeReactions.textContent = card.likes.length;
         cardFunction.toggleCardLike(cardButtonLike);
       });
     }
     else {
       cardFunction.deleteCardLike(cardData._id)
       .then(card => {
-        cardLikeReactions.textContent = cardFunction.cardLikeReactions(card.likes);
+        cardLikeReactions.textContent = card.likes.length;
         cardFunction.toggleCardLike(cardButtonLike);
       });
     };
   });   
-  // Проверка пользователь = создатель карточки, если да то появится функция удаления карточки
+  // @todo:  Проверка пользователь = создатель карточки, если да то появится функция удаления карточки
   if(cardData.owner._id === profileId) {
     cardButtonDelete.addEventListener('click', () => {
       cardFunction.openPopup(popupDeleteCardClass.popupCardDelete);
@@ -46,7 +46,7 @@ const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDel
   else {
     cardButtonDelete.style.opacity = '0';
   }
-  // Слушатель клика по изображению карточки, открывающий попап
+  // @todo:  Слушатель клика по изображению карточки, открывающий попап
   cardImage.addEventListener('click', () => {
     cardFunction.populatePopupImage(cardTitle.textContent, cardImage.src);
   });
@@ -67,12 +67,7 @@ const cardDelete = (cardFunction, cardId, cardItem, popupCardDelete) => {
   });
 };
 
-// Функция подсчета кол-ва лайков
-const cardLikeReactions = (cardDataReactions) => {
-  let i = cardDataReactions.length;
-  return i;
-};
-
+// @todo:  Функция добавление лайка ранее понравившимся карточкам
 const cardLikeMyReactions = (cardData, profileId, cardButtonLike, cardFunction) => {
   const profileLikeCard = cardData.likes.some(profileReactionCard => profileReactionCard._id === profileId);
   if(profileLikeCard) {
@@ -80,9 +75,9 @@ const cardLikeMyReactions = (cardData, profileId, cardButtonLike, cardFunction) 
   };
 };
 
-// Добавление и удаление лайка
+// @todo:  Добавление и удаление лайка
 const toggleCardLike = (cardButtonLike) => {
   cardButtonLike.classList.toggle('card__like-button_is-active');
 };
 
-export {initialCard, cardDelete, cardLikeReactions, cardLikeMyReactions, toggleCardLike};
+export {initialCard, cardDelete, cardLikeMyReactions, toggleCardLike};
