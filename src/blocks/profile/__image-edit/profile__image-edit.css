@@ -1,0 +1,10 @@
+.profile__image-edit {
+  display: none;
+  position: absolute;
+  top: 47px;
+  left: 47px;
+}
+
+.profile__image:hover .profile__image-edit {
+  display: block;
+}

@@ -1,13 +1,14 @@
 import '../pages/index.css';
-import {initialCard, cardDelete, cardLikeReactions, toggleCardLike}  from '../components/places/card.js';
+import {initialCard, cardDelete, cardLikeReactions, cardLikeMyReactions, toggleCardLike}  from '../components/places/card.js';
 import {openPopup, closePopup} from '../components/modal/modal.js';
 import {clearValidation, enableValidation} from '../components/validation/validation.js';
-import {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike} from '../components/api/api.js';
+import {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike, patchUserProfileImage} from '../components/api/api.js';
 
 // @todo:  Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
 // @todo:  DOM узлы
 const listCard = document.querySelector('.places__list');
+const profileInfo = document.querySelector('.profile__info');
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const profileImageLink = document.querySelector('.profile__image');
@@ -15,7 +16,8 @@ const buttonEditProfile = document.querySelector('.profile__edit-button');
 const buttonAddCard = document.querySelector('.profile__add-button');
 // @todo:  Попапы 
 const popups = document.querySelectorAll('.popup');
-const popupEditProfile = document.querySelector('.popup_type_edit');
+const popupEditProfile = document.querySelector('.popup_type_edit'),
+      popupEditAvatarProfile = document.querySelector('.popup_type_edit-avatar-profile');
 const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupImage = document.querySelector('.popup_type_image'),
       popupImageTag = popupImage.querySelector('.popup__image'),
@@ -33,7 +35,6 @@ const formNewCard = document.forms.newPlace,
       placeNameInput = formNewCard.elements.placeName,
       ImageLinkInput = formNewCard.elements.link;
 // ID профиля, для функции добавления карточки
-let userProfileId;
 
 const popupDeleteCardClass = {
   popupCardDelete: popupDeleteCard,
@@ -45,6 +46,7 @@ const cardFunction = {
   cardDelete: cardDelete,
   cardDeleteRequestServer: deleteCard,
   cardLikeReactions: cardLikeReactions,
+  cardLikeMyReactions: cardLikeMyReactions,
   toggleCardLike: toggleCardLike,
   populatePopupImage: populatePopupImage,
   openPopup: openPopup,
@@ -52,8 +54,6 @@ const cardFunction = {
   putAddCardLike: putAddCardLike, 
   deleteCardLike: deleteCardLike
 };
-
-// Функции делабщие запрос на сервер
 
 // Классы и селекторы для валидации
 const validationConfing = {
@@ -73,11 +73,12 @@ Promise.all([getInitialCards(), getUserProfile()])
 .then((apiResult) => {
   const cardsData = apiResult[0];
   const userDataProfile = apiResult[1];
+  // добавление id 
+  profileInfo.setAttribute('id', `${userDataProfile._id}`);
   cardsData.forEach(cardData => {
-    cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction, userDataProfile._id, popupDeleteCardClass));
+    cardRender(listCard, initialCard(cardTemplate, cardData, cardFunction, profileInfo, popupDeleteCardClass));
   })
   initializeUserDetails(userDataProfile);
-  userProfileId = userDataProfile._id;
 })
 .catch((error) => {
   console.log('Ошибка запроса при выполнении запроса:', error)
@@ -142,6 +143,10 @@ formEditProfile.addEventListener('submit', evt => {
   })
 });
 
+profileImageLink.addEventListener('click', () => {
+  openPopup(popupEditAvatarProfile);
+});
+
 // обработка отправки формы, измн кнопки сохранить и очистка полей ввода
 
 formNewCard.addEventListener('submit', evt => {
@@ -153,7 +158,7 @@ formNewCard.addEventListener('submit', evt => {
   };
   postAddCard(cardData)
   .then(addCardData => {
-    cardRender(listCard, initialCard(cardTemplate, addCardData, cardFunction, userProfileId, popupDeleteCardClass), 'prepend');
+    cardRender(listCard, initialCard(cardTemplate, addCardData, cardFunction, profileInfo, popupDeleteCardClass), 'prepend');
     closePopup(popupAddCard);
     formNewCard.querySelector('.popup__button').textContent = 'Сохранить'
   })
@@ -172,7 +177,6 @@ function populatePopupImage(name, link) {
 };
 
 // для закрытия попапов при клике на оверлей и кнопки закрыть
-
 popups.forEach((popup) => {
   const buttonClose = popup.querySelector('.popup__close');
   popup.addEventListener('click', evt => {

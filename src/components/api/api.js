@@ -13,7 +13,7 @@ const getInitialCards = () => {
   .then(res => {
     if(res.ok) {
       return res.json();
-    }
+    };
   });
 };
 
@@ -38,8 +38,7 @@ const postAddCard = (cardData) => {
     if(res.ok) {
       return res.json();
     };
-  })
-  // .catch(error)
+  });
 };
 
 const patchUserProfile = (userData) => {
@@ -91,5 +90,17 @@ const deleteCardLike = (cardId) => {
   });
 };
 
+const patchUserProfileImage = (linkImage) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({avatar: linkImage})
+  })
+  .then(res => {
+    if(res.ok) {
+      return res.json();
+    };
+  });
+};
 
-export {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike};
+export {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike, patchUserProfileImage};
