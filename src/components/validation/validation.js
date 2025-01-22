@@ -53,7 +53,7 @@ const toggleButtonState = (inputList, buttonElement, options) => {
 };
 
 const setEventListeners = (formElement, options) => {
-  // Находит поля и кнопку в форме. 
+  // Находит поля
   const inputList = Array.from(formElement.querySelectorAll(options.inputSelector));
   // Находит кнопку в форме. 
   const buttonElement = formElement.querySelector(options.submitButtonSelector);
@@ -68,22 +68,18 @@ const setEventListeners = (formElement, options) => {
   });
 };
 
-// @todo:  Очистка полей валидации, и добавление атрибута "disabled" кнопкам "Сохранить"
+// @todo:  Очистка полей валидации, вызов toggleButtonState и hideInputError
 const clearValidation = (formElement, options) => {
   const buttonElement = formElement.querySelector(options.submitButtonSelector);
   const inputList = Array.from(formElement.querySelectorAll(options.inputSelector));
-  buttonElement.disabled = true;
-  buttonElement.classList.add(options.inactiveButtonClass);
+  toggleButtonState(inputList, buttonElement, options);
   inputList.forEach(inputElement => {
-    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-    errorElement.textContent = '';
-    inputElement.classList.remove(options.inputErrorClass);
+    hideInputError(formElement, inputElement, options);
   });
 };
 
-// Получает объект настроек = названия классов элементов формы
+// Запускает валидацию форм
 const enableValidation = (options) => {
-  // Находит все формы
   const formList = Array.from(document.querySelectorAll(options.formSelector));
   formList.forEach((formElement) => {
     setEventListeners(formElement, options);

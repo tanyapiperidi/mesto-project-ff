@@ -24,27 +24,26 @@ const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDel
       .then(card => {
         cardLikeReactions.textContent = card.likes.length;
         cardFunction.toggleCardLike(cardButtonLike);
-      });
+      })
+      .catch(err => console.log(`Ошибка.....: ${err}`));
     }
     else {
       cardFunction.deleteCardLike(cardData._id)
       .then(card => {
         cardLikeReactions.textContent = card.likes.length;
         cardFunction.toggleCardLike(cardButtonLike);
-      });
+      })
+      .catch(err => console.log(`Ошибка.....: ${err}`));
     };
   });   
   // @todo:  Проверка пользователь = создатель карточки, если да то появится функция удаления карточки
   if(cardData.owner._id === profileId) {
     cardButtonDelete.addEventListener('click', () => {
-      cardFunction.openPopup(popupDeleteCardClass.popupCardDelete);
-      popupDeleteCardClass.popupButton.addEventListener('click', () => {
-        cardFunction.cardDelete(cardFunction, cardData._id, cardItem, popupDeleteCardClass.popupCardDelete);
-      });
+      cardFunction.cardDelete(cardFunction, popupDeleteCardClass, cardData._id, cardItem);
     });
   }
   else {
-    cardButtonDelete.style.opacity = '0';
+    cardButtonDelete.remove();
   }
   // @todo:  Слушатель клика по изображению карточки, открывающий попап
   cardImage.addEventListener('click', () => {
@@ -53,18 +52,20 @@ const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDel
   return cardItem;
 };
 
-// @todo: Функция удаления карточки
-const cardDelete = (cardFunction, cardId, cardItem, popupCardDelete) => {
+// @todo: Функция открытия попапа подтверждения удаления карточки
+const cardDelete = (cardFunction, popupDeleteCardClass, cardId, cardItem) => {
+  cardFunction.openPopup(popupDeleteCardClass.popupCardDelete);
+  popupDeleteCardClass.popupButton.onclick = () => cardFunction.submitCardDelete(cardFunction, popupDeleteCardClass, cardId, cardItem);
+};
+
+// @todo: Функция удаления карточки на сервере, и на странице
+const submitCardDelete = (cardFunction, popupDeleteCardClass, cardId, cardItem) => {
   cardFunction.cardDeleteRequestServer(cardId)
-  .then(res => {
-    if(res === 'ok') {
-      cardItem.remove();
-      cardFunction.closePopup(popupCardDelete)
-    }
-    else {
-      console.log('Что-то пошло не так не так');
-    }
-  });
+  .then(() => {
+    cardItem.remove();
+    cardFunction.closePopup(popupDeleteCardClass.popupCardDelete);
+  })
+  .catch(err => console.log(`Ошибка.....: ${err}`));
 };
 
 // @todo:  Функция добавление лайка ранее понравившимся карточкам
@@ -80,4 +81,4 @@ const toggleCardLike = (cardButtonLike) => {
   cardButtonLike.classList.toggle('card__like-button_is-active');
 };
 
-export {initialCard, cardDelete, cardLikeMyReactions, toggleCardLike};
+export {initialCard, cardDelete, submitCardDelete, cardLikeMyReactions, toggleCardLike};

@@ -13,7 +13,7 @@
 }
 
 .profile__image:hover{
-  opacity: 0.2;
+  box-shadow: inset 0px 0px 100px #000;
 }
 
 @media screen and (max-width: 740px) {

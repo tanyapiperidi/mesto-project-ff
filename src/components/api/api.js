@@ -5,27 +5,26 @@ const config = {
     'Content-Type': 'application/json'
   },
 };
+
+function getResponseData(res) {
+  if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`); 
+  }
+  return res.json();
+};
   
 const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-  });
+  .then(getResponseData);
 };
 
 const getUserProfile = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-  });
+  .then(getResponseData);
 };
 
 const postAddCard = (cardData) => {
@@ -34,11 +33,7 @@ const postAddCard = (cardData) => {
     headers: config.headers,
     body: JSON.stringify(cardData)
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-  });
+  .then(getResponseData);
 };
 
 const patchUserProfile = (userData) => {
@@ -47,11 +42,7 @@ const patchUserProfile = (userData) => {
     headers: config.headers,
     body: JSON.stringify(userData)
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-  });
+  .then(getResponseData);
 };
 
 const deleteCard = (cardId) => {
@@ -59,11 +50,7 @@ const deleteCard = (cardId) => {
     method: 'DELETE',
     headers: config.headers,
   })
-  .then(res => {
-    if(res.ok) {
-      return 'ok';
-    };
-  });
+  .then(getResponseData);
 };
 
 const putAddCardLike = (cardId) =>{
@@ -71,11 +58,7 @@ const putAddCardLike = (cardId) =>{
     method: 'PUT',
     headers: config.headers,
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-  });
+  .then(getResponseData);
 };
 
 const deleteCardLike = (cardId) => {
@@ -83,11 +66,7 @@ const deleteCardLike = (cardId) => {
     method: 'DELETE',
     headers: config.headers,
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-  });
+  .then(getResponseData);
 };
 
 const patchUserProfileImage = (linkImage) => {
@@ -96,15 +75,7 @@ const patchUserProfileImage = (linkImage) => {
     headers: config.headers,
     body: JSON.stringify({avatar: linkImage})
   })
-  .then(res => {
-    if(res.ok) {
-      return res.json();
-    };
-    console.log(res)
-  })
-  .catch(error => {
-    console.log('Ошибка в запросе к серверу:', error)
-  })
+  .then(getResponseData);
 };
 
 export {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike, patchUserProfileImage};
