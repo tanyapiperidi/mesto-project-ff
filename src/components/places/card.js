@@ -1,4 +1,4 @@
-const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDeleteCardClass) => {
+const initialCard = (cardTemplate, cardData, cardFunction, profileInfo) => {
   const cardItem = cardTemplate.querySelector('.places__item').cloneNode(true);
   const cardTitle = cardItem.querySelector('.card__title');
   const cardImage = cardItem.querySelector('.card__image');
@@ -39,7 +39,7 @@ const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDel
   // @todo:  Проверка пользователь = создатель карточки, если да то появится функция удаления карточки
   if(cardData.owner._id === profileId) {
     cardButtonDelete.addEventListener('click', () => {
-      cardFunction.cardDelete(cardFunction, popupDeleteCardClass, cardData._id, cardItem);
+      cardFunction.cardDelete(cardData._id, cardItem);
     });
   }
   else {
@@ -50,22 +50,6 @@ const initialCard = (cardTemplate, cardData, cardFunction, profileInfo, popupDel
     cardFunction.populatePopupImage(cardTitle.textContent, cardImage.src);
   });
   return cardItem;
-};
-
-// @todo: Функция открытия попапа подтверждения удаления карточки
-const cardDelete = (cardFunction, popupDeleteCardClass, cardId, cardItem) => {
-  cardFunction.openPopup(popupDeleteCardClass.popupCardDelete);
-  popupDeleteCardClass.popupButton.onclick = () => cardFunction.submitCardDelete(cardFunction, popupDeleteCardClass, cardId, cardItem);
-};
-
-// @todo: Функция удаления карточки на сервере, и на странице
-const submitCardDelete = (cardFunction, popupDeleteCardClass, cardId, cardItem) => {
-  cardFunction.cardDeleteRequestServer(cardId)
-  .then(() => {
-    cardItem.remove();
-    cardFunction.closePopup(popupDeleteCardClass.popupCardDelete);
-  })
-  .catch(err => console.log(`Ошибка.....: ${err}`));
 };
 
 // @todo:  Функция добавление лайка ранее понравившимся карточкам
@@ -81,4 +65,4 @@ const toggleCardLike = (cardButtonLike) => {
   cardButtonLike.classList.toggle('card__like-button_is-active');
 };
 
-export {initialCard, cardDelete, submitCardDelete, cardLikeMyReactions, toggleCardLike};
+export {initialCard, cardLikeMyReactions, toggleCardLike};

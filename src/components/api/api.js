@@ -45,7 +45,7 @@ const patchUserProfile = (userData) => {
   .then(getResponseData);
 };
 
-const deleteCard = (cardId) => {
+const deleteCardRequest = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
@@ -78,4 +78,4 @@ const patchUserProfileImage = (linkImage) => {
   .then(getResponseData);
 };
 
-export {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCard, putAddCardLike, deleteCardLike, patchUserProfileImage};
+export {getInitialCards, getUserProfile, postAddCard, patchUserProfile, deleteCardRequest, putAddCardLike, deleteCardLike, patchUserProfileImage};
